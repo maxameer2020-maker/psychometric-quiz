@@ -175,6 +175,7 @@ function updateHeader() {
   document.getElementById('info-label').innerText = `👤 اللاعب: ${playerName}  |  ✅ إجابات صحيحة: ${correctCount}  |  ${mode}  |  📝 سؤال ${currentIndex + 1}/${activeQuestions.length}`;
 }
 
+// Save score to Firestore & Load Leaderboard Table
 function endGame() {
   stopTimer();
   document.getElementById('quiz-screen').classList.add('hidden');
@@ -182,4 +183,59 @@ function endGame() {
 
   document.getElementById('end-title').innerText = `🎉 انتهى التحدي يا ${playerName}! 🎉`;
   document.getElementById('final-score').innerText = `${correctCount} من ${questionsData.length}`;
+
+  if (typeof db !== 'undefined') {
+    db.collection("leaderboard").add({
+      name: playerName,
+      score: correctCount,
+      total: questionsData.length,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      loadLeaderboard();
+    }).catch(err => {
+      console.error("Error saving score:", err);
+      loadLeaderboard();
+    });
+  } else {
+    console.error("Firebase db object is undefined.");
+  }
+}
+
+// Fetch Top 10 High Scores
+function loadLeaderboard() {
+  const tbody = document.getElementById('leaderboard-body');
+  if (!tbody) return;
+
+  if (typeof db === 'undefined') {
+    tbody.innerHTML = "<tr><td colspan='3'>خطأ: لم يتم الاتصال بـ Firebase</td></tr>";
+    return;
+  }
+
+  db.collection("leaderboard")
+    .orderBy("score", "desc")
+    .limit(10)
+    .get()
+    .then((querySnapshot) => {
+      tbody.innerHTML = "";
+      let rank = 1;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}</td>
+          <td>${data.name}</td>
+          <td>${data.score} / ${data.total}</td>
+        `;
+        tbody.appendChild(row);
+        rank++;
+      });
+
+      if (querySnapshot.empty) {
+        tbody.innerHTML = "<tr><td colspan='3'>لا يوجد متصدرين بعد! كن الأول 🏆</td></tr>";
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting leaderboard: ", error);
+      tbody.innerHTML = "<tr><td colspan='3'>حدث خطأ أثناء تحميل اللائحة.</td></tr>";
+    });
 }
