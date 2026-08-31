@@ -33,6 +33,11 @@
     
     .result-text { font-size: 18px; font-weight: bold; min-height: 25px; margin: 10px 0; }
     .exp-text { font-size: 14px; color: #374151; white-space: pre-line; text-align: right; background: #F9FAFB; padding: 10px; border-radius: 6px; }
+
+    /* Leaderboard Table CSS */
+    .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px; }
+    .leaderboard-table th, .leaderboard-table td { padding: 10px; border-bottom: 1px solid #E5E7EB; text-align: center; }
+    .leaderboard-table th { background: #F3F4F6; color: #1F2937; }
   </style>
 </head>
 <body>
@@ -76,9 +81,42 @@
       <h3 style="margin: 0; color: #3B82F6;">الإجابات الصحيحة</h3>
       <h2 style="font-size: 32px; margin: 10px 0 0 0; color: #3B82F6;" id="final-score">0 / 0</h2>
     </div>
+
+    <!-- LEADERBOARD UI -->
+    <h3>🏆 لائحة المتصدرين</h3>
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>الترتيب</th>
+          <th>الاسم</th>
+          <th>النتيجة</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body">
+        <tr><td colspan="3">جاري تحميل اللائحة...</td></tr>
+      </tbody>
+    </table>
+
+    <br>
     <button class="btn" style="background: #EF4444;" onclick="location.reload()">إعادة اللعب 🔄</button>
   </div>
 
+  <!-- Firebase Scripts with your exact Config -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkRV5IZYRyLwCxowEn0vBb9EaXo8Us7nU",
+      authDomain: "bsesho.firebaseapp.com",
+      projectId: "bsesho",
+      storageBucket: "bsesho.firebasestorage.app",
+      messagingSenderId: "583617427357",
+      appId: "1:583617427357:web:2017bb852903d33cb1a174",
+      measurementId: "G-BMVR47QBDY"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
