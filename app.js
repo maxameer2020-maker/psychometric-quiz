@@ -72,7 +72,7 @@ function loadQuestion() {
     container.appendChild(btn);
   });
 
-  timeLeft = 45;
+  timeLeft = 30;
   document.getElementById('timer-label').innerText = `⏳ ${timeLeft}`;
   runTimer();
 }
