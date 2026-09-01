@@ -5,7 +5,7 @@ let wrongQuestions = [];
 let playerName = "";
 let correctCount = 0;
 let currentIndex = 0;
-let timeLeft = 45;
+let timeLeft = 30;
 let timerId = null;
 let isReviewMode = false;
 
@@ -98,6 +98,7 @@ function showHint() {
   const hintBtn = document.getElementById('hint-btn');
   hintBtn.disabled = true;
   hintBtn.style.background = "#FEF3C7";
+  timeLeft -= 10;
 }
 
 function checkAnswer(selectedIdx) {
