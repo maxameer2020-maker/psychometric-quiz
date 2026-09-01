@@ -94,11 +94,28 @@ function stopTimer() {
 
 function showHint() {
   const q = activeQuestions[currentIndex];
-  document.getElementById('words-label').innerText = q.words;
+  
+  let safeHint = q.words;
+  if (safeHint.includes('،')) {
+    safeHint = safeHint.split('،')[0]; 
+  }
+  document.getElementById('words-label').innerText = "💡 تلميح: " + safeHint;
+
   const hintBtn = document.getElementById('hint-btn');
   hintBtn.disabled = true;
   hintBtn.style.background = "#FEF3C7";
+  
   timeLeft -= 10;
+  
+  if (timeLeft <= 0) {
+    timeLeft = 0; 
+    document.getElementById('timer-label').innerText = `⏳ ${timeLeft}`;
+    stopTimer();
+    timeOut(); // End the turn if they ran out of time using the hint
+  } else {
+    // Update the label instantly so the player sees the penalty
+    document.getElementById('timer-label').innerText = `⏳ ${timeLeft}`;
+  }
 }
 
 function checkAnswer(selectedIdx) {
